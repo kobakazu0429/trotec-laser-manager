@@ -1,0 +1,21 @@
+{
+  "tasks": {
+    "start": "deno run --unstable -A --unsafely-ignore-certificate-errors ./src/index.tsx",
+    "dev": "deno task start --watch",
+    "compile:mac": "deno compile --unstable -A --unsafely-ignore-certificate-errors --target x86_64-apple-darwin --output ./dist/x86_64-apple-darwin ./src/index.tsx",
+    "compile:win": "deno compile --unstable -A --unsafely-ignore-certificate-errors --target x86_64-pc-windows-msvc --output ./dist/x86_64-pc-windows-msvc ./src/index.tsx"
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["ban-ts-comment"]
+    }
+  },
+  "imports": {
+    "hono": "https://deno.land/x/hono@v3.7.1/mod.ts",
+    "hono/adapter": "https://deno.land/x/hono@v3.7.1/helper/adapter/index.ts",
+    "hono/jsx": "https://deno.land/x/hono@v3.7.1/jsx/index.ts",
+    "hono/basic-auth": "https://deno.land/x/hono@v3.7.1/middleware/basic-auth/index.ts",
+    "hono/powered-by": "https://deno.land/x/hono@v3.7.1/middleware/powered-by/index.ts",
+    "hono/logger": "https://deno.land/x/hono@v3.7.1/middleware/logger/index.ts"
+  }
+}

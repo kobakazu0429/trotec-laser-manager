@@ -1,0 +1,31 @@
+name: publish
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - name: Generate release tag
+        id: tag
+        shell: bash
+        run: |
+          STR=${{ github.sha }}
+          echo "release_tag=${STR:0:7}" >> "$GITHUB_OUTPUT"
+      - name: Build
+        run: |
+          deno task compile:mac
+          deno task compile:win
+          mv dist/x86_64-apple-darwin dist/x86_64-mac-${{ steps.tag.outputs.release_tag }}
+          mv dist/x86_64-pc-windows-msvc.exe dist/x86_64-windows-${{ steps.tag.outputs.release_tag }}.exe
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          files: dist/*
