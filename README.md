@@ -1,5 +1,14 @@
 # trotec-laser-manager
 
+**WIP**
+
+trotec-laser-manager is a web server that allows you to control your Trotec laser cutter from a web browser.
+
+Features:
+
+- Create user accounts for your laser cutter by anyone.
+- (Admin) Remove user accounts, designs, jobs.
+
 ## Usage
 
 1. Download the latest binary from releases.
