@@ -2,6 +2,8 @@ import type {
   SignInResponse,
   GetUsersResponse,
   CreateUserResponse,
+  GetDesignsResponse,
+  GetJobsResponse,
 } from "./types.ts";
 
 export class TrotecApiClient {
@@ -9,7 +11,7 @@ export class TrotecApiClient {
   public jwtToken?: string;
 
   public client: (
-    method: "POST" | "GET" | "PUT",
+    method: "POST" | "GET" | "PUT" | "DELETE",
     path: string,
     body: object
   ) => Promise<Response>;
@@ -18,7 +20,7 @@ export class TrotecApiClient {
     this.baseUrl = "https://" + this.ipAddress + ":5001";
 
     this.client = async (
-      method: "GET" | "POST" | "PUT",
+      method: "GET" | "POST" | "PUT" | "DELETE",
       path: string,
       body: object
     ) => {
@@ -101,6 +103,52 @@ export class TrotecApiClient {
       `/api/User/DeleteUser?userId=${userId}`,
       {}
     );
+    return res;
+  }
+
+  public async getDesigns() {
+    const res = await this.client("GET", "/api/DesignData/GetDesigns", {});
+    const json: GetDesignsResponse = await res.json();
+    return json;
+  }
+
+  public async deleteDesigns(designIds: string[]) {
+    const res = await this.client(
+      "DELETE",
+      `/api/DesignData/DeleteDesigns`,
+      designIds
+    );
+    return res;
+  }
+
+  public async getJobs() {
+    const res = await this.client("GET", "/api/Workbench/GetWorkbenches", {});
+    const json: GetJobsResponse = await res.json();
+    return json;
+  }
+
+  public async deleteJobs(jobIds: string[]) {
+    const res = await this.client(
+      "DELETE",
+      `/api/Workbench/DeleteWorkbenches`,
+      jobIds
+    );
+    return res;
+  }
+
+  public async updateUserPreferences(body: any[]) {
+    const res = await this.client(
+      "PUT",
+      `/api/User/UpdateUserPreferences`,
+      body
+    );
+    return res;
+  }
+
+  public async updateUserLanguage() {
+    const res = await this.updateUserPreferences([
+      { key: "Language", value: "JP" },
+    ]);
     return res;
   }
 }

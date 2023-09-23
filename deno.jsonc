@@ -7,7 +7,7 @@
   },
   "lint": {
     "rules": {
-      "exclude": ["ban-ts-comment"]
+      "exclude": ["ban-ts-comment", "no-explicit-any"]
     }
   },
   "imports": {

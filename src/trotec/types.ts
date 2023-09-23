@@ -14,6 +14,51 @@ export interface GetUsersResponse {
 }
 export type CreateUserResponse = GetUsersResponse["users"][0];
 
+export type GetDesignsResponse = {
+  fileKey?: string;
+  name: string;
+  tags?: any[];
+  usedLayers: string[];
+  usedImages: string[];
+  kind: string;
+  size: {
+    width: number;
+    height: number;
+  };
+  version: number;
+  isReadOnly: number;
+  id: string;
+  isDeleted: number;
+  updatedOn: string;
+  createdOn: string;
+  ownerKey: string;
+}[];
+
+export type GetJobsResponse = {
+  name: string;
+  isRotary: number;
+  rotaryWorkpieceDiameter: number;
+  tags?: any[];
+  version: number;
+  visionCompensationKind: string;
+  preprocessingOptions: PreprocessingOptions;
+  isReadOnly: number;
+  id: string;
+  isDeleted: number;
+  updatedOn: string;
+  createdOn: string;
+  ownerKey: string;
+}[];
+
+export interface PreprocessingOptions {
+  innerGeometryFirst: string;
+  skipOverlappingCutLines: string;
+  processBeziers: string;
+  stampMode: string;
+  slopeRadius?: string;
+  linksMode?: string;
+}
+
 export interface SignInResponse {
   id: string;
   email: string;
@@ -41,6 +86,8 @@ export interface Preferences {
   PdfImportMode: PdfImportMode;
   PdfImportPageLimit: PdfImportPageLimit;
 }
+
+export type UpdateUserPreferencesResponse = Preferences;
 
 export interface Language {
   jobQueueLock: number;
