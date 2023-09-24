@@ -161,4 +161,16 @@ export class TrotecApiClient {
     ]);
     return res;
   }
+
+  public async clearQueue() {
+    const res = await this.client({
+      method: "POST",
+      path: `/api/Queue/ClearQueue?jobQueueItemType=NonRotary`,
+      headers: {
+        "x-target-device": "local-only/S4-5723",
+      },
+    });
+    console.log(res);
+    return res;
+  }
 }

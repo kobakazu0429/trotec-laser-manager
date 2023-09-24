@@ -99,6 +99,9 @@ app.get("/admin", async (c) => {
         <li>
           <a href="/admin/jobs/delete">Delete All Jobs</a>
         </li>
+        <li>
+          <a href="/admin/queue/delete">Delete All Queue</a>
+        </li>
       </ul>
     </Layout>
   );
@@ -150,6 +153,19 @@ app.get("/admin/jobs/delete", async (c) => {
   return c.html(
     <Layout>
       <h2>Successful, Deleted All Jobs.</h2>
+      <a href="/admin">Back to Admin Top Page</a>
+    </Layout>
+  );
+});
+
+app.get("/admin/queue/delete", async (c) => {
+  const trotec = new TrotecApiClient(SPEEDY400_IP_ADDRESS);
+  await trotec.signIn(EMAIL, PASSWORD);
+  await trotec.clearQueue();
+
+  return c.html(
+    <Layout>
+      <h2>Successful, Deleted All Queue.</h2>
       <a href="/admin">Back to Admin Top Page</a>
     </Layout>
   );
