@@ -6,34 +6,34 @@ import type {
   GetJobsResponse,
 } from "./types.ts";
 
+type Client = (options: {
+  method: "POST" | "GET" | "PUT" | "DELETE";
+  path: string;
+  body?: object;
+  headers?: object;
+}) => Promise<Response>;
+
 export class TrotecApiClient {
   public baseUrl: string;
   public jwtToken?: string;
 
-  public client: (
-    method: "POST" | "GET" | "PUT" | "DELETE",
-    path: string,
-    body: object
-  ) => Promise<Response>;
+  public client: Client;
 
   constructor(private ipAddress: string) {
     this.baseUrl = "https://" + this.ipAddress + ":5001";
 
-    this.client = async (
-      method: "GET" | "POST" | "PUT" | "DELETE",
-      path: string,
-      body: object
-    ) => {
+    this.client = async ({ method, path, body, headers }) => {
       const url = new URL(path, this.baseUrl);
       const res = await fetch(url.toString(), {
         method,
-        body: method === "GET" ? undefined : JSON.stringify(body),
+        body: method === "GET" ? undefined : body ? JSON.stringify(body) : null,
         headers: {
           "content-type": "application/json",
           // @ts-expect-error
           authorization: this.jwtToken ? `Bearer ${this.jwtToken}` : undefined,
           origin: "https://" + ipAddress + ":2402",
           referer: "https://" + ipAddress + ":2402/",
+          ...headers,
         },
       });
       // console.log(res);
@@ -42,9 +42,13 @@ export class TrotecApiClient {
   }
 
   public async signIn(email: string, password: string) {
-    const res = await this.client("POST", "/api/User/SignIn", {
-      email,
-      password,
+    const res = await this.client({
+      method: "POST",
+      path: "/api/User/SignIn",
+      body: {
+        email,
+        password,
+      },
     });
     const json: SignInResponse = await res.json();
     this.jwtToken = json.token;
@@ -56,31 +60,33 @@ export class TrotecApiClient {
     newUserEmail: string,
     newUserPassword: string
   ) {
-    const res = await this.client(
-      "POST",
-      `/api/User/CreateUser?password=${newUserPassword}&language=JP`,
-      {
+    const res = await this.client({
+      method: "POST",
+      path: `/api/User/CreateUser?password=${newUserPassword}&language=JP`,
+      body: {
         email: newUserEmail,
         name: newUserName,
         password: newUserPassword,
-      }
-    );
+      },
+    });
     const json: CreateUserResponse = await res.json();
     return json;
   }
 
   public async getUsers() {
-    const res = await this.client("GET", "/api/User/GetUsers", {});
+    const res = await this.client({
+      method: "GET",
+      path: "/api/User/GetUsers",
+    });
     const json: GetUsersResponse = await res.json();
     return json;
   }
 
   public async acceptEula() {
-    const res = await this.client(
-      "POST",
-      `/api/User/AcceptEula?eulaVersion=1_0`,
-      {}
-    );
+    const res = await this.client({
+      method: "POST",
+      path: `/api/User/AcceptEula?eulaVersion=1_0`,
+    });
     return res;
   }
 
@@ -89,59 +95,63 @@ export class TrotecApiClient {
     currentPassword: string,
     newPassword: string
   ) {
-    const res = await this.client(
-      "PUT",
-      `/api/User/UpdateUserPassword?userId=${userId}&currentPassword=${currentPassword}&newPassword=${newPassword}`,
-      {}
-    );
+    const res = await this.client({
+      method: "PUT",
+      path: `/api/User/UpdateUserPassword?userId=${userId}&currentPassword=${currentPassword}&newPassword=${newPassword}`,
+    });
     return res;
   }
 
   public async deleteUser(userId: string) {
-    const res = await this.client(
-      "PUT",
-      `/api/User/DeleteUser?userId=${userId}`,
-      {}
-    );
+    const res = await this.client({
+      method: "PUT",
+      path: `/api/User/DeleteUser?userId=${userId}`,
+    });
     return res;
   }
 
   public async getDesigns() {
-    const res = await this.client("GET", "/api/DesignData/GetDesigns", {});
+    const res = await this.client({
+      method: "GET",
+      path: "/api/DesignData/GetDesigns",
+    });
     const json: GetDesignsResponse = await res.json();
     return json;
   }
 
   public async deleteDesigns(designIds: string[]) {
-    const res = await this.client(
-      "DELETE",
-      `/api/DesignData/DeleteDesigns`,
-      designIds
-    );
+    const res = await this.client({
+      method: "DELETE",
+      path: `/api/DesignData/DeleteDesigns`,
+      body: designIds,
+    });
     return res;
   }
 
   public async getJobs() {
-    const res = await this.client("GET", "/api/Workbench/GetWorkbenches", {});
+    const res = await this.client({
+      method: "GET",
+      path: "/api/Workbench/GetWorkbenches",
+    });
     const json: GetJobsResponse = await res.json();
     return json;
   }
 
   public async deleteJobs(jobIds: string[]) {
-    const res = await this.client(
-      "DELETE",
-      `/api/Workbench/DeleteWorkbenches`,
-      jobIds
-    );
+    const res = await this.client({
+      method: "DELETE",
+      path: `/api/Workbench/DeleteWorkbenches`,
+      body: jobIds,
+    });
     return res;
   }
 
   public async updateUserPreferences(body: any[]) {
-    const res = await this.client(
-      "PUT",
-      `/api/User/UpdateUserPreferences`,
-      body
-    );
+    const res = await this.client({
+      method: "PUT",
+      path: `/api/User/UpdateUserPreferences`,
+      body,
+    });
     return res;
   }
 
