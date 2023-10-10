@@ -27,6 +27,14 @@ jobs:
           mv dist/x86_64-apple-darwin dist/x86_64-mac-${{ steps.tag.outputs.release_tag }}
           mv dist/x86_64-pc-windows-msvc.exe dist/x86_64-windows-${{ steps.tag.outputs.release_tag }}.exe
 
+          cat <<EOF > dist/start.sh1
+          $env:SPEEDY400_IP_ADDRESS = "192.168."
+          $env:EMAIL = ""
+          $env:PASSWORD = ""
+
+          ./x86_64-windows-${{ steps.tag.outputs.release_tag }}.exe
+          EOF
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
