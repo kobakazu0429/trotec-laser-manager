@@ -39,6 +39,10 @@ app.use(
 const Layout: FC = (props) => {
   return (
     <html>
+      <head>
+        <link rel="icon" href="data:,"></link>
+        <title>trotec-laser-manager</title>
+      </head>
       <body>{props.children}</body>
     </html>
   );
@@ -174,8 +178,11 @@ app.get("/admin/queue/delete", async (c) => {
 app.get("/", (c) => {
   return c.html(
     <Layout>
-      <h1>Hello Hono!</h1>
+      <h1>Trotec Laser Manager</h1>
       <a href="/user/create">アカウントを作成する</a>
+      <br />
+      <br />
+      <a href="/admin">管理画面 (TA専用)</a>
     </Layout>
   );
 });
@@ -208,7 +215,9 @@ app.get("/user/create", async (c) => {
         <li>パスワード: {password}</li>
       </ul>
 
-      <a href={`https://${SPEEDY400_IP_ADDRESS}:2402/login/`}>ログインする</a>
+      <a href={`https://${SPEEDY400_IP_ADDRESS}:2402/login/`} target="_blank">
+        ログインする
+      </a>
       <br />
       <a href="/">トップに戻る</a>
     </Layout>
