@@ -42,8 +42,40 @@ const Layout: FC = (props) => {
       <head>
         <link rel="icon" href="data:,"></link>
         <title>trotec-laser-manager</title>
+        <style>
+          {`
+            clipboard-copy {
+              -webkit-appearance: button;
+              -moz-appearance: button;
+              padding: 0.4em 0.6em;
+              font: 0.9rem system-ui, sans-serif;
+              display: inline-block;
+              cursor: default;
+              color: rgb(36, 41, 47);
+              background: rgb(246, 248, 250);
+              border-radius: 6px;
+              border: 1px solid rgba(31, 35, 40, 0.15);
+              box-shadow: rgba(31, 35, 40, 0.04) 0 1px 0 0, rgba(255, 255, 255, 0.25) 0 1 0 0 inset;
+            }
+            clipboard-copy:hover {
+              background: rgb(243, 244, 246);
+            }
+            clipboard-copy:active {
+              background: #ebecf0;
+            }
+              clipboard-copy:focus-visible {
+              outline: 2px solid #0969da;
+            }
+          `}
+        </style>
       </head>
-      <body>{props.children}</body>
+      <body>
+        {props.children}
+        <script
+          type="module"
+          src="https://esm.sh/@github/clipboard-copy-element"
+        ></script>
+      </body>
     </html>
   );
 };
@@ -222,8 +254,14 @@ app.get("/user/create", async (c) => {
         アカウントの作成に成功しました。下記の情報でログインしてください。
       </h2>
       <ul>
-        <li>メールアドレス: {randomEmail}</li>
-        <li>パスワード: {password}</li>
+        <li>
+          メールアドレス: {randomEmail}{" "}
+          <clipboard-copy value={randomEmail}>Copy</clipboard-copy>
+        </li>
+        <li>
+          パスワード: {password}{" "}
+          <clipboard-copy value={password}>Copy</clipboard-copy>
+        </li>
       </ul>
 
       <a href={`https://${SPEEDY400_IP_ADDRESS}:2402/login/`} target="_blank">
