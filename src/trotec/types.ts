@@ -13,6 +13,7 @@ export interface GetUsersResponse {
   hasOrganizationContextAccess: 0 | 1;
 }
 export type CreateUserResponse = GetUsersResponse["users"][0];
+export type UpdateUserResponse = GetUsersResponse["users"][0];
 
 export type GetDesignsResponse = {
   fileKey?: string;

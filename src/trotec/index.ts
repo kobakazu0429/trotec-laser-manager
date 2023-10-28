@@ -4,6 +4,7 @@ import type {
   CreateUserResponse,
   GetDesignsResponse,
   GetJobsResponse,
+  UpdateUserResponse,
 } from "./types.ts";
 
 type Client = (options: {
@@ -171,6 +172,35 @@ export class TrotecApiClient {
       },
     });
     console.log(res);
+    return res;
+  }
+
+  public async updateUserData(
+    options: Omit<
+      UpdateUserResponse,
+      "id" | "role" | "roles" | "permissions" | "active" | "updatedOn"
+    > & {
+      userId: string;
+      isCanModifyMdb: boolean;
+    }
+  ) {
+    const res = await this.client({
+      method: "PUT",
+      path: `/api/User/UpdateUserData`,
+      body: {
+        id: options.userId,
+        email: options.email,
+        name: options.name,
+        roles: ["User"],
+        permissions: [
+          "IsUser",
+          options.isCanModifyMdb ? "CanModifyMdb" : undefined,
+        ].filter(Boolean),
+        active: 1,
+        createdOn: options.createdOn,
+        updatedOn: new Date().toISOString(),
+      },
+    });
     return res;
   }
 }

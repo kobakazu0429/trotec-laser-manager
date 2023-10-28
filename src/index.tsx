@@ -194,16 +194,27 @@ app.get("/user/create", async (c) => {
     .toString(36)
     .slice(-8)}@kure-nct.ac.jp`;
   const password = "Student1234";
-  await manager.createUser("Student", randomEmail, password);
+  const newUserData = await manager.createUser(
+    "Student",
+    randomEmail,
+    password
+  );
 
   const newUser = new TrotecApiClient(SPEEDY400_IP_ADDRESS);
-  const newUserData = await newUser.signIn(randomEmail, password);
+  await newUser.signIn(randomEmail, password);
 
   await newUser.updateUserPassword(newUserData.id, password, password);
   await newUser.signIn(randomEmail, password);
   await newUser.acceptEula();
   await newUser.signIn(randomEmail, password);
   await newUser.updateUserLanguage();
+  await manager.updateUserData({
+    userId: newUserData.id,
+    email: newUserData.email,
+    name: newUserData.name,
+    createdOn: newUserData.createdOn,
+    isCanModifyMdb: false,
+  });
 
   return c.html(
     <Layout>
